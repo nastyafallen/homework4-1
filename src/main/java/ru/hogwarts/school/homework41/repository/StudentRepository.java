@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.hogwarts.school.homework41.model.Student;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +23,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     @Query(value = "SELECT AVG (age) as average_age FROM student", nativeQuery = true)
     Double averageAge();
 
-    @Query(value = "SELECT * FROM student ORDER BY id DESC LIMIT number", nativeQuery = true)
+    @Query(value = "SELECT * FROM student ORDER BY id DESC LIMIT :number", nativeQuery = true)
     List<Student> getLastStudents(@Param("number") int number);
 }

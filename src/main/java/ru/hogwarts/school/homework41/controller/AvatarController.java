@@ -4,20 +4,24 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.hogwarts.school.homework41.service.AvatarService;
 import ru.hogwarts.school.homework41.model.Avatar;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.Min;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 @RestController
 @RequestMapping("/avatar")
+@Validated
 public class AvatarController {
     private final AvatarService avatarService;
 
@@ -51,5 +55,11 @@ public class AvatarController {
             response.setContentLength((int) avatar.getFileSize());
             is.transferTo(os);
         }
+    }
+
+    @GetMapping("/allAvatars")
+    public ResponseEntity<List<Avatar>> findAllWithPagination(@RequestParam @Min(0) int page,
+                                                @RequestParam @Min(0) int size) {
+        return ResponseEntity.ok(avatarService.findAllWithPagination(page, size));
     }
 }

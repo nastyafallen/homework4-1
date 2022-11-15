@@ -8,7 +8,6 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import ru.hogwarts.school.homework41.controller.StudentController;
 import ru.hogwarts.school.homework41.model.Student;
-import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class Homework41ApplicationTests {
@@ -27,28 +26,30 @@ class Homework41ApplicationTests {
     }
 
     @Test
-    void createGetUpdateDeleteStudent() {
-        Student student = new Student(1L, "test", 22);
+    void createGetUpdateDeleteStudent() throws Exception{
+        Student student = new Student(8L, "test", 99);
         Assertions
                 .assertThat(this.restTemplate.postForObject("http://localhost:" + port + "/student", student, Student.class))
                 .isEqualTo(student);
         Assertions
-                .assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/student/find?id=1", Student.class))
+                .assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/student/find?id=" + student.getId(), Student.class))
                 .isEqualTo(student);
-        Student studentUpdated = new Student(1L, "test2", 22);
-        this.restTemplate.put("http://localhost:" + port + "/student", studentUpdated);
+        student.setName("test2");
+        student.setAge(88);
+        this.restTemplate.put("http://localhost:" + port + "/student", student);
         Assertions
-                .assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/student/find?id=1", Student.class))
-                .isEqualTo(studentUpdated);
-        this.restTemplate.delete("http://localhost:" + port + "/student/" + studentUpdated.getId());
+                .assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/student/find?id=" + student.getId(), Student.class))
+                .isEqualTo(student);
+        this.restTemplate.delete("http://localhost:" + port + "/student/" + student.getId());
         Assertions
-                .assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/student/find?id=1", Student.class))
+                .assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/student/find?id=" + student.getId(), Student.class))
                 .isNull();
     }
 
-    @Test
+    /*@Test
     void getStudentsByAgeAndFindByAgeBetween() {
-        Student student = new Student(1L, "test", 10);
+        Student student = new Student("test", 10, null, null);
+        student.setId(10L);
         this.restTemplate.postForObject("http://localhost:" + port + "/student", student, Student.class);
         Assertions
                 .assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/student/filter?age=10", List.class))
@@ -58,12 +59,12 @@ class Homework41ApplicationTests {
                 .isNotEmpty();
         this.restTemplate.delete("http://localhost:" + port + "/student/" + student.getId());
         Assertions
-                .assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/student/find?id=1", Student.class))
+                .assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/student/find?id=" + student.getId(), Student.class))
                 .isNull();
 
     }
 
-    /*@Test
+    @Test
     void getFacultyById() {
         Student student = new Student(1L, "test", 10);
         Faculty faculty = new Faculty(1L, "Random", "Random");
@@ -72,6 +73,6 @@ class Homework41ApplicationTests {
         Assertions
                 .assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/student/1/faculty", Faculty.class))
                 .isEqualTo(faculty);
-    }*/
-
+    }
+*/
 }

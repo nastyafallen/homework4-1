@@ -14,13 +14,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.hogwarts.school.homework41.controller.FacultyController;
 import ru.hogwarts.school.homework41.model.Faculty;
+import ru.hogwarts.school.homework41.model.Student;
 import ru.hogwarts.school.homework41.repository.FacultyRepository;
 import ru.hogwarts.school.homework41.service.FacultyService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.Set;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -43,11 +45,11 @@ class Homework41ApplicationTest {
 
     @Test
     void FacultyControllerTest() throws Exception {
-        Faculty faculty = new Faculty(1L, "test", "random");
+        Faculty faculty = new Faculty(6L, "test", "random");
 
         final String name = "test";
         final String color = "random";
-        final long id = 1;
+        final Long id = 6L;
 
         List<Faculty> expected = new ArrayList<>();
         expected.add(faculty);
@@ -86,7 +88,7 @@ class Homework41ApplicationTest {
                         .content(facultyObject.toString())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
+                .andExpect(status().isAccepted())
                 .andExpect(jsonPath("$.id").value(id))
                 .andExpect(jsonPath("$.name").value(name))
                 .andExpect(jsonPath("$.color").value(color));

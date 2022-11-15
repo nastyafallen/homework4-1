@@ -1,5 +1,6 @@
 package ru.hogwarts.school.homework41.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.homework41.service.FacultyService;
@@ -36,8 +37,8 @@ public class FacultyController {
 
     @PutMapping
     public ResponseEntity<Faculty> updateFaculty(@RequestBody Faculty faculty) {
-        Faculty updatedFaculty = facultyService.updateFaculty(faculty.getId(), faculty);
-        return ResponseEntity.ok(updatedFaculty);
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body(facultyService.updateFaculty(faculty));
     }
 
     @DeleteMapping("{id}")

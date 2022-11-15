@@ -1,16 +1,19 @@
 package ru.hogwarts.school.homework41.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.homework41.service.StudentService;
 import ru.hogwarts.school.homework41.model.Faculty;
 import ru.hogwarts.school.homework41.model.Student;
-
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.List;
-import java.util.Optional;
 
 @RequestMapping("/student")
 @RestController
+@Validated
 public class StudentController {
     private final StudentService studentService;
 
@@ -20,23 +23,19 @@ public class StudentController {
 
     @PostMapping
     public ResponseEntity<Student> createStudent(@RequestBody Student student) {
-        Student newStudent = studentService.createStudent(student);
-        return ResponseEntity.ok(newStudent);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(studentService.createStudent(student));
     }
 
     @GetMapping("/find")
     public ResponseEntity<Student> getStudent(@RequestParam("id") Long id) {
-        Optional<Student> optional = studentService.getStudent(id);
-        if (optional.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(optional.get());
+        return ResponseEntity.ok(studentService.getStudent(id));
     }
 
     @PutMapping
     public ResponseEntity<Student> updateStudent(@RequestBody Student student) {
-        Student updatedStudent = studentService.updateStudent(student.getId(), student);
-        return  ResponseEntity.ok(updatedStudent);
+        return  ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body(studentService.updateStudent(student));
     }
 
     @DeleteMapping("{id}")
@@ -77,7 +76,7 @@ public class StudentController {
     }
 
     @GetMapping("/lastStudents")
-    public ResponseEntity<List<Student>> getLastStudents(@RequestParam("number") int number) {
+    public ResponseEntity<List<Student>> getLastStudents(@RequestParam("number") @Min(1) @Max(10) int number) {
         return ResponseEntity.ok(studentService.getLastStudents(number));
     }
 }

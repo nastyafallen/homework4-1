@@ -2,6 +2,7 @@ package ru.hogwarts.school.homework41.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.hogwarts.school.homework41.exception.FacultyNotFoundException;
 import ru.hogwarts.school.homework41.model.Faculty;
 import ru.hogwarts.school.homework41.model.Student;
 import ru.hogwarts.school.homework41.repository.FacultyRepository;
@@ -19,27 +20,23 @@ public class FacultyService {
         this.facultyRepository = facultyRepository;
     }
 
-    public Faculty createFaculty(Faculty faculty){
+    public Faculty createFaculty(Faculty faculty) {
         return facultyRepository.save(faculty);
     }
 
-    public Optional<Faculty> getFaculty(long id) {
+    public Optional<Faculty> getFaculty(Long id) {
         return facultyRepository.findById(id);
     }
 
-    public Faculty updateFaculty(long id, Faculty faculty) {
-        Optional<Faculty> optional = facultyRepository.findById(id);
-        if (optional.isPresent()) {
-            Faculty facultyFromDb = optional.get();
-            facultyFromDb.setColor(faculty.getColor());
-            facultyFromDb.setName(faculty.getName());
-            return facultyRepository.save(facultyFromDb);
-        } else {
-            return null;
-        }
+    public Faculty updateFaculty(Faculty faculty) {
+        Faculty oldFaculty = facultyRepository.findById(faculty.getId())
+                .orElseThrow(FacultyNotFoundException::new);
+        oldFaculty.setColor(faculty.getColor());
+        oldFaculty.setName(faculty.getName());
+        return facultyRepository.save(oldFaculty);
     }
 
-    public void deleteFaculty(long id) {
+    public void deleteFaculty(Long id) {
         facultyRepository.deleteById(id);
     }
 
